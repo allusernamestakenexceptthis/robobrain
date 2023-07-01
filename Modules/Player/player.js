@@ -1,11 +1,8 @@
 
 const exec = require('child_process').exec;
-//global.__player_is_busy=false;
-
 
 
 function Play(file,callback){
-    //return execSync('play '+file, {stdio:"ignore"} );
     
     //if callback is actually string = noconflict then don't play this unimportant sound if busy.
     if (callback=="noconflict"){

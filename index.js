@@ -57,59 +57,6 @@ models.add({
     sensitivity: '0.6',
     hotwords : 'snowboy'
 });
-/*
-models.add({
-    file: 'node_modules/snowboy/resources/raspberry.pmdl',
-    sensitivity: '0.3',
-    hotwords : 'raspberry'
-});
-*/
-/*
-models.add({
-    file: 'node_modules/snowboy/resources/gozira.pmdl',
-    sensitivity: '0.1',
-    hotwords : 'gozira'
-});
-
-models.add({
-    file: 'node_modules/snowboy/resources/raspberry.pmdl',
-    sensitivity: '0.5',
-    hotwords : 'raspberry'
-});
-*/
-/*
-models.add({
-    file: 'node_modules/snowboy/resources/Next.pmdl',
-    sensitivity: '0.6',
-    hotwords : 'next'
-});
-
-models.add({
-    file: 'node_modules/snowboy/resources/Previous.pmdl',
-    sensitivity: '0.3',
-    hotwords : 'previous'
-});*/
-
-/*
-models.add({
-    file: 'node_modules/snowboy/resources/gojira.pmdl',
-    sensitivity: '0.4',
-    hotwords : 'ゴジラ'
-});*/
-
-/*
-models.add({
-    file: 'node_modules/snowboy/resources/Brainet.pmdl',
-    sensitivity: '0.5',
-    hotwords : 'brainet'
-});*/
-/*
-models.add({
-    file: 'node_modules/snowboy/resources/dingdong.pmdl',
-    sensitivity: '0.5',
-    hotwords : 'dingdong'
-});*/
-
 
 const detector = new Detector({
     resource: "node_modules/snowboy/resources/common.res",
@@ -119,7 +66,6 @@ const detector = new Detector({
 
 detector.on('silence', function () {
     var hook_name="snowboy_silence";
-    //console.log('silence '+silenceLength+" "+soundCounter+" "+activateBeingOnSilence);
     soundCounter=0;
     if (silenceLength<silenceThreshold){
         silenceLength++;
@@ -136,21 +82,18 @@ detector.on('silence', function () {
 detector.on('sound', function () {
     var hook_name="snowboy_sound";
     var curtime=get_current_time();
-    // console.log('sound'+(curtime-lastSound));
     if (curtime-lastSound<2){
         soundCounter++;
-        //if (silenceLength>silenceThreshold || activateBeingOnSilence){
-            if (soundCounter==soundCounterThreshold){
-                if (silenceLength>=silenceThreshold){
-                    activateBeingOnSilence=true;
-                }
-                silenceLength=0;
+        if (soundCounter==soundCounterThreshold){
+            if (silenceLength>=silenceThreshold){
+                activateBeingOnSilence=true;
             }
-            if (soundCounter>soundCounterThreshold+3){
-                activateBeingOnSilence=false;
-                silenceLength=0;
-            }
-        //}
+            silenceLength=0;
+        }
+        if (soundCounter>soundCounterThreshold+3){
+            activateBeingOnSilence=false;
+            silenceLength=0;
+        }
     }
 
     public_functions.callAHook(hook_name,{"soundCounter":soundCounter,'lastSound':lastSound});
@@ -164,95 +107,25 @@ detector.on('error', function () {
 detector.on('hotword', function (index, hotword) {
     //console.log('hotword', index, hotword);
     return hotword_detected(hotword);
-
 });
 
-
-
-
-
-
-
-
-
-
-//forkSpeech("jp");
 
 var mic = null;
 startSnowboy();
 //sphinxDetector();
 console.log("listening..");
 
-//chromecast.Start();
-
-//bulb.test();
-
-
 setTimeout(function(){
 
     startQueue();
 
-    //Speaker.Speak("Ttan,I");
-    //console.log("test");
-    //recordWav();
-    //callActivateOnSilence();
-    //goodMorning();
-    //
-  //  playNext();
-   
-    /*
-    chromecast.PlayYoutube('LELFIuhSPCI&list=RDLELFIuhSPCI');
-    setTimeout(function(){
-        chromecast.Stop();
-    },27000);*/
-    //chromecast.PlayYoutube('LELFIuhSPCI');//&list=PLFO0esT_hEQSS4vqO1nh5i6TRyIvsMXAN
-    //chromecast.PlayYoutube("https://r1---sn-ogueln7r.googlevideo.com/videoplayback?sparams=dur%2Cei%2Cid%2Cinitcwndbps%2Cip%2Cipbits%2Citag%2Clmt%2Cmime%2Cmm%2Cmn%2Cms%2Cmv%2Cpl%2Cratebypass%2Crequiressl%2Csource%2Cupn%2Cexpire&id=o-APapg-jNCGPALUnA171ztU8iiiK45nmD5hIWDvwUfCLE&initcwndbps=2090000&ip=153.226.87.64&ei=uKHWWPneJMqS4ALSxbCgDw&dur=55.681&mv=m&mt=1490460992&ms=au&mn=sn-ogueln7r&source=youtube&mm=31&upn=wWcsU0nZxxA&lmt=1472328189356236&itag=22&key=yt6&mime=video%2Fmp4&ipbits=0&pl=22&ratebypass=yes&requiressl=yes&expire=1490482712&signature=3ABC033BF62A0CB9FB3C4E52330DA0AD728ABB28.7ADE782026A846B6C7BB713DA29A4FFDD889CE32");
-    /*Proccessor.Process({
-        lang:"en", 
-        recognized:{
-            transcript:"record audio"
-        }
-    });*/
-    //Proccessor.RegisterHooks({"tst":{'type':"callback",'lang':"en"}});
 },1000)
 
 
-/*
-function recordWav(){
-    registerHook("recordWave",{
-        module: "snowboy_silence",
-        test: { 
-            "var":"silenceLength",
-            "rule":"=",
-            "value":3
-        },
-        callback: function(res){
-            console.log(res);
-        },
-        times: "once"
-    });
-}
-*/
 
 var public_functions={
-    /*
-        Hook format:
-        id: unique_id
-        params{
-            module: module/function name e.g. snowboy_silence,
-            test { 
-                var: variable name to test
-                rule: = != < > 
-                value: target value
-            },
-            callback: callback function,
-            times: how many times to run, once or continuous
-        }
-
-    */
 
     registerHook:function(id,params){
-        //var index=Object.keys(hooks).length;
         module = params.module;
         delete params.module;
         if (!hooks[module]){
@@ -314,8 +187,6 @@ function startQueue(){
             if (val.indexOf("robobrainJP ")!=-1){
                 val = val.replace("robobrainJP ","");
                 console.log("robojp detected: " + data);
-                //stopSnowboy();
-                //isbusy=true;
                 Proccessor.ProcessPlain(val,"jp");
                 
             }else if (val.indexOf("robobrain ")!=-1){
@@ -427,14 +298,7 @@ function hotword_detected(hotword){
         }
     }
 
-    /*
-    if (hotword=="ゴジラ"){
-        lang="jp";
-    }*/
-
-
     if (!isbusy){
-        //stopSnowboy();
         forkSpeech({lang:lang});
     }
 }
@@ -444,7 +308,6 @@ process.on('SIGINT', cleanExit); // catch ctrl-c
 process.on('SIGTERM', cleanExit); // catch kill
 
 function sphinxDetector(){
-    //return;//disabled
     console.log("starting pocketsphynx");
     var sphinx = spawn("./sphinxtest.sh");
 
@@ -495,7 +358,7 @@ function callActivateOnSilence(){
     //Saturday
     if (dayOfWeek==6){
         hourLimit=10;
-    }//dayOfWeek==0 || 
+    }
     
     //less than 2 hours since last call. so ignore
     if (lastTimeOnSilentCalled>cur_time-60*60*2){
@@ -598,8 +461,7 @@ function startSnowboy(){
 
 function callbacksProcessor(args){
     var func=args[0];
-    func=parent[log]("tst");
-    //func("tst");
+    func=parent[log]("test");
     args=Array.prototype.slice.call(args, 1);
     console.log(func,args);
     
@@ -607,7 +469,6 @@ function callbacksProcessor(args){
 /*
     Start autoload
 */
-
 
 emodules = require ("./Modules/Autoinclude")(function(func){
     try {

@@ -77,21 +77,13 @@ noble.on('stateChange', function(state) {
             var curtime=get_current_time();
             if (!sunTimes || lastCheck>curtime-60*60*24){
                 sunTimes = SunCalc.getTimes(new Date(), lat, long);
-                //var sunriseStr = sunTimes.sunrise.getHours() + ':' + sunTimes.sunrise.getMinutes();
-                //console.log(sunriseStr);
             }
 
-            //turning off hour, shouldn't be sunrise
-            //sunriseHour = sunTimes.sunrise.getHours()+1;
-            //sunriseMinutes = 0;
             sunriseHour = 0;
             sunriseMinutes = 30;
 
             sunsetHour = sunTimes.sunset.getHours();
             sunsetMinutes = 0;
-
-            //sunsetHour = 16;
-            //sunsetMinutes = 56;
 
             changeState = "";
             if (hours==sunriseHour && minutes>=sunriseMinutes && minutes<=sunriseMinutes+5){
@@ -99,8 +91,6 @@ noble.on('stateChange', function(state) {
             }else if(hours==sunsetHour && minutes>=sunsetMinutes && minutes<=sunsetMinutes+10){
                 changeState="on";
             }
-
-            //startTransition();
 
             if (changeState && changeState!=lastBulbOnOff){
                 console.log(changeState);
@@ -151,14 +141,9 @@ noble.on('stateChange', function(state) {
 
                         if (characteristic.uuid == indicateUID){
                             console.log("indicate uuid subscribe and notify")
-                            /*characteristic.notify(function(error){
-                                console.log("indicate: "); console.log(error);});
-                                */
                             characteristic.subscribe(function (error){
                                     console.log(error);
-                                    //console.log(readCharacterstic);
                                     readCharacterstic.read(function (error, data) {console.log(data.toString('hex'));});
-                                    //readCharacterstic.readValue();
                                 }
                             );
 
@@ -179,31 +164,18 @@ noble.on('stateChange', function(state) {
                                             console.log(data.toString('hex'));
                                             var hexData = data.toString('hex');
                                             lastBulbRead = data;
-                                            //if (data[5]==0x00 && data[6]==0x00 && data[7]==0x00){
                                             if (data[14]==0x28 || (data[5]==0x00 && data[6]==0x00 && data[7]==0x00)){
                                                 console.log("light is OFF");
                                                 lastBulbOnOff = "off";
-                                                //sendLightCommand("on");
                                             }else{
                                                 console.log("light is ON");
                                                 lastBulbOnOff = "on";
-                                                //sendLightCommand("off");
-                                                
                                             }
 
                                         });
-                                        /*
-                                        readCharacterstic.on('read', function (data, isNotification) {
-                                            console.log(isNotification);
-                                            console.log(data.toString('hex'));
-                                            //readCharacterstic.read(function (error, data) {console.log(data);});
-                                        });*/
                                     });
                                 });
                             });
-
-                            /*
-                            characteristic.write(new Buffer("01", 'hex'));*/
                         }
 
                         if (characteristic.uuid===writeUID){
@@ -255,9 +227,7 @@ noble.on('stateChange', function(state) {
                 });
                 },
                 function (err) {
-                //peripheral.disconnect();
                     console.log(err);
-                   // noble.startScanning();
                 }
             );
             });
@@ -400,19 +370,16 @@ noble.on('stateChange', function(state) {
             hexCommand+=extra;
             var hexArr = getHexArray(hexCommand);
 
-            //var hexArr = "55aa03080200ffff".toLowerCase().match(/[0-9a-f]{2}/g);
             var sum = 0;
             hexArr.map(function(v){
                 sum+=parseInt(v,16);
             });
             var lastByte = ((~sum  & parseInt(0xff))).toString(16);
-            //console.log(lastByte);
             if (lastByte.length==1){
                 lastByte="0"+lastByte;
             }
             hexCommand+=lastByte;
             lastBulbOnOff="on";
-            //((~0x20c + 0x01 & parseInt(0xff))).toString(16)
         }else{
             hexCommand+=extra;
         }
@@ -570,10 +537,6 @@ noble.on('stateChange', function(state) {
                 clearInterval(transHandler);
             }
         }, 1000);
-        /*
-        transHandler = setInterval(function() {
-            transition();
-        }, 1000/fps);*/
     }
 
     /* ==================== Transition Calculator ==================== */
@@ -626,12 +589,7 @@ noble.on('stateChange', function(state) {
         sendLightCommand("#"+rgb2hex(currentColor),function(){
             startTransition();
         });
-        
-        // transition ended. start a new one
-        /*
-        if (increment[0] == 0 && increment[1] == 0 && increment[2] == 0) {
-            startTransition();
-        }*/
+
     }
 
 

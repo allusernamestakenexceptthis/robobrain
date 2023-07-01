@@ -1,20 +1,19 @@
 const Speaker = require("../Speaker/speaker.js");
 const execSync = require('child_process').execSync;
 const chromecast = require(__base+'./Modules/Chromecast/chromecast.js');
+const CONFIG = require(__base+'./Configs/config.js');
 
 
 
 function Start(text,toDo){
-   // var url = "https://gomilkyway.com/aws/index.php?text="+encodeURIComponent(text);
-    //console.log(url);
-    //execSync('wget -qO- '+url+' &> /dev/null ', {stdio:"ignore"} );
     if (text=="play next"){
         return chromecast.Next();
     }else if (text=="play previous"){
         return chromecast.Prev();
     }
-    var child = require('child_process').exec(
-        'curl "https://www.gomilkyway.com/aws/?text='+encodeURIComponent(text)+'&retone=1" ',
+    // this should be replaced with a url
+    require('child_process').exec(
+        'curl "' + CONFIG.YOUTUBE_MUSIC_FETCHING_URL + encodeURIComponent(text)+'&retone=1" ',
         function (error, stdout, stderr) {
             if (stdout){
                 chromecast.PlayYoutube(stdout);
@@ -22,11 +21,6 @@ function Start(text,toDo){
             }
         }
     );
-    /* check language
-    if (toDo.lang){
-
-    }*/
-    //Speaker.Speak("ok, jedi master");
 }
 
 function sayOk(lang){

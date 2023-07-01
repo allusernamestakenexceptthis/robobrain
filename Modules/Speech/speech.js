@@ -73,14 +73,9 @@ function stopGoogle(){
     
     //delete goglStream;
     playStop();
-    //console.log('stopped');
     if (messageCallback){
         messageCallback({ message: 'stopped' });
     }
-    /*
-    setTimeout(function(){
-        process.exit();
-    },1000);*/
 }
 
 
@@ -129,12 +124,10 @@ function listenToGoogle(info){
                     }
                 }
             }
- 
-            //console.log(recognizeResponse);
         });
 
 
-    goglmic.pipe(goglStream);//.on('finish', function () { console.log("finished p") });;//.on('error', console.error);
+    goglmic.pipe(goglStream);
 }
 
 /* Expose Module */
